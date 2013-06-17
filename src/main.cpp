@@ -36,7 +36,8 @@ int main(int argc, char *argv[]){
 	if (verbose) Model->verbose();
 	//Model->setModelDataFile("../models/simple_delta/","ModelData.in");
 	Model->setModelDataFile("../models/2parallels/","ModelData.in");
-    //Model->setModelDataFile("../models/simple_graph/","ModelData.in");
+  	 //Model->setModelDataFile("../models/simple_graph/","ModelData.in");
+
 
 
 

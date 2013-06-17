@@ -1,0 +1,12 @@
+name               = Inicio_Parana
+river              = 0
+position_in_river  = 0.0
+
+name               = Fin_Lujan
+river              = 10
+position_in_river  = 1
+
+name               = Nocturna
+river              = 16
+position_in_river  = 0.85
+

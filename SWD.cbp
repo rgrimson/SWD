@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SWD" />
+		<Option makefile_is_custom="1" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="addons/;src/;build config/;" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/$(PROJECT_NAME)_debug" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Debug/" />
+				<Option external_deps="/usr/local/of_v0.7.4_linux64_release/libs/openFrameworksCompiled/lib/linux64/libopenFrameworksDebug.a;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="v" />
+				<Option host_application="v" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+			<Target title="Release">
+				<Option output="bin/$(PROJECT_NAME)" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Release/" />
+				<Option external_deps="/usr/local/of_v0.7.4_linux64_release/libs/openFrameworksCompiled/lib/linux64/libopenFrameworks.a;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+			</Target>
+		</Build>
+		<Unit filename="config.make">
+			<Option virtualFolder="build config" />
+		</Unit>
+		<Unit filename="src/Boundary.cpp" />
+		<Unit filename="src/Boundary.h" />
+		<Unit filename="src/Graph.cpp" />
+		<Unit filename="src/Graph.h" />
+		<Unit filename="src/Locations.cpp" />
+		<Unit filename="src/Locations.h" />
+		<Unit filename="src/Model.cpp" />
+		<Unit filename="src/Model.h" />
+		<Unit filename="src/Parameters.cpp" />
+		<Unit filename="src/Parameters.h" />
+		<Unit filename="src/Particle.cpp" />
+		<Unit filename="src/Particle.h" />
+		<Unit filename="src/Solver.cpp" />
+		<Unit filename="src/Solver.h" />
+		<Unit filename="src/Visualization.cpp" />
+		<Unit filename="src/Visualization.h" />
+		<Unit filename="src/main.cpp">
+			<Option virtualFolder="src/" />
+		</Unit>
+		<Unit filename="src/object3D.cpp" />
+		<Unit filename="src/object3D.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

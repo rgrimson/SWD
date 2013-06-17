@@ -1,0 +1,11 @@
+#Name	Orig	Dest	Length	Type	Discret_pts(internals)
+Rio1	0	1	1000	1	5
+Rio1	1	2	1000	1	5
+Rio1	2	3	1000	1	5
+Rio1	3	4	1000	1	5
+Rio1	1	5	1000	0	5
+Rio1	5	2	1000	0	5
+Rio1	5	3	1000	2	5
+
+
+

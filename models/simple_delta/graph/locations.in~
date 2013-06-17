@@ -1,0 +1,8 @@
+name               = Location1
+river              = 0
+position_in_river  = 0.85
+
+name               = Location2
+river              = 1
+position_in_river  = 0.85
+

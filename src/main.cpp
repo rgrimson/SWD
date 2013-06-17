@@ -34,8 +34,8 @@ int main(int argc, char *argv[]){
     ofSetupOpenGL(&window, 1024,768, OF_WINDOW);			// <-------- setup the GL context
 	Model=new testApp();
 	if (verbose) Model->verbose();
-	Model->setModelDataFile("../models/simple_delta/","ModelData.in");
-	//Model->setModelDataFile("../models/2parallels/","ModelData.in");
+	//Model->setModelDataFile("../models/simple_delta/","ModelData.in");
+	Model->setModelDataFile("../models/2parallels/","ModelData.in");
     //Model->setModelDataFile("../models/simple_graph/","ModelData.in");
 
 

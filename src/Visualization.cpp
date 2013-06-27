@@ -7,7 +7,7 @@ visualization_t::visualization_t(){
 
     mod1 = false;
     mod2 = false;
-    mod3 = false;
+    mod3 = true;
     mod4 = false;
 
 
@@ -42,8 +42,8 @@ void visualization_t::setup(graph_t *graph_in, param_t *param_in){
                 v = p - graph->graph_pos(r, px-pdx);
             else
                 v = graph->graph_pos(r, px+pdx) - p;
-
-            river_shape[r].addMeshVertex(p,v,0.5);
+            //revisar el ancho!
+            river_shape[r].addMeshVertex(p,v,graph->sections[graph->rivers[r].section].B(graph->H(r, ((float)(i))/ n_interp_pts,false)*9/graph->prop));//el *7 no tiene nada que hacer aca
         }
     }
 
@@ -59,7 +59,11 @@ void visualization_t::setup(graph_t *graph_in, param_t *param_in){
         double li=lr/(double) ni;//length of each inteval
         for (idx_int i=0; i<ni; i++)
         {
-            double w=li*(graph->rivers[r].h[i]+graph->rivers[r].h[i+1])/2;//falta tener en cuenta el ancho
+            double hi=graph->rivers[r].h[i];//heights
+            double hf=graph->rivers[r].h[i+1];
+            double si=graph->sections[graph->rivers[r].section].S(hi);//surfaces
+            double sf=graph->sections[graph->rivers[r].section].S(hf);
+            double w=li*(si+sf)/2;//volume
             double k=w/param->inv_particles_density-0.5; //number of particles between these two discret pts
             double d=li/k; //distance between particles
             for (idx_int j=0; j<k; j++)
@@ -110,7 +114,7 @@ void visualization_t::update(){//returs 1 if went out of the system
             }
     }
 
-    if(mod3){
+    if(mod3==mod3){ //cambie esto porque el update debe realizarse siempre, se dibuje o no
         /** COMPUTE PARTICLES **/
 
         //if (param->verbose) cout << "Adding new input particles (" << inactive_particles.size() << " remaining)" << endl;
@@ -125,31 +129,31 @@ void visualization_t::update(){//returs 1 if went out of the system
                 r = graph->nodes[graph->border_nodes[i]].river_out[0]; //call it r
                 double q=graph->rivers[r].q[0];
                 if (q>0) //if the flow goes in,
-                    boundary_q_in[i]+=q;  //increment accumulated flow.
+                    boundary_q_in[i]+=q*param->dt;  //increment accumulated flow.
             }
             else //else if a river ends here
             {
                 r = graph->nodes[graph->border_nodes[i]].river_in[0]; //call it r
                 double q=graph->rivers[r].q[graph->rivers[r].n_int_discret_pts+1];
                 if (q<0) //if the flow goes in, add a particle there
-                    boundary_q_in[i]-=q;  //increment accumulated flow.
+                    boundary_q_in[i]-=q*param->dt;  //increment accumulated flow.
             }
 
             while ((boundary_q_in[i])>param->inv_particles_density)
             {
                 if (start)
-                    addParticle(r,0,i);
+                    addParticle(r,ofRandom(0,graph->U(r,0)),i);
                 else
-                    addParticle(r,1,i);
+                    addParticle(r,ofRandom(1-graph->U(r,1),1),i);
                 boundary_q_in[i]-=param->inv_particles_density;
             }
         }
 
         //if (param->verbose) cout << "Moving and killing particles" << endl;
-        for(idx_int i = 0; i < particle.size(); i++)
+        for(idx_int i = 0; i < active_particles.size(); i++)
         {
-            if (particle[i].active && particle[i].update(graph, param))
-                killParticle(i);
+            if (particle[active_particles[i]].update(graph, param))
+                killParticle(active_particles[i]);
         }
     }
 
@@ -182,9 +186,8 @@ void visualization_t::draw(){
     if(mod3)
     {
         //ofScale(50.0,50.0,0.0);
-        for(idx_int i = 0; i < particle.size(); i++){
-            if (particle[i].active) particle[i].draw();
-        }
+        for(idx_int i = 0; i < active_particles.size(); i++)
+            particle[active_particles[i]].draw();
     }
     /*
     if (param->draw_particles)
@@ -237,15 +240,21 @@ void visualization_t::draw(){
 //--------------------------------------------------------------
 void visualization_t::resetParticles(){
     inactive_particles.clear();
+    active_particles.clear();
+    idx_particles.clear();
     for (idx_int i=0;i<param->max_particles;i++)
+    {
         inactive_particles.push_back(i);
+        idx_particles.push_back(0);
+    }
+
 
     for(idx_int i = 0; i < particle.size(); i++)
         particle[i].reset();
 }
 
 //--------------------------------------------------------------
-void visualization_t::addParticle(){
+/*void visualization_t::addParticle(){
     int i;
     if (!inactive_particles.empty())
     {
@@ -254,7 +263,7 @@ void visualization_t::addParticle(){
         particle[i].reset();
         particle[i].active=true;
     }
-}
+}*/
 
 void visualization_t::addParticle(idx_int r, double pos, idx_int color){
     int i;
@@ -262,6 +271,8 @@ void visualization_t::addParticle(idx_int r, double pos, idx_int color){
     {
         i=inactive_particles.back();
         inactive_particles.pop_back();
+        active_particles.push_back(i);
+        idx_particles[i]=active_particles.size()-1;
         particle[i].reset();
         particle[i].river = r;
         particle[i].pos_in_river = pos;
@@ -274,6 +285,10 @@ void visualization_t::addParticle(idx_int r, double pos, idx_int color){
 void visualization_t::killParticle(int i){
     inactive_particles.push_back(i);
     particle[i].active=false;
+    idx_int j=idx_particles[i];//pos in vector
+    swap(active_particles[j], active_particles.back());
+    active_particles.pop_back();
+    idx_particles[active_particles[j]]=j;
 }
 
 

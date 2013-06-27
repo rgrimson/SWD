@@ -41,6 +41,9 @@ class visualization_t{
 		        //to manage particles
 		vector <particle_t> particle;
 		vector <int> inactive_particles;
+		vector <int> active_particles;
+        vector <int> idx_particles;
         vector <double> boundary_q_in;
+
 
 };

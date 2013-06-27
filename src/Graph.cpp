@@ -22,7 +22,6 @@ void  graph_t::load_structure(param_t *param)
     {
 
         file >>  nodes[i].pos.y >> nodes[i].pos.x >> nodes[i].degree;
-
     }
 
     file.close();
@@ -32,7 +31,12 @@ void  graph_t::load_structure(param_t *param)
     //read sections.in
     file.open((param->model_dir + param->graph_dir + param->sections_file).c_str());
     for(idx_int i = 0; i < n_sections; i++)
+    {
         file >> aux_str >> sections[i].h >> sections[i].b;
+        //cout << "S" << aux_str  << " h:" << sections[i].h << " b:"<<sections[i].b << endl;
+
+    }
+
     file.close();
 
 
@@ -119,12 +123,14 @@ void  graph_t::load_structure(param_t *param)
     //set minimum and maximum heights to something reasonable
     max_h=2.1;
     min_h=1.9;
+
+    prop=rivers[1].length/(rivers[1].pos_ini-rivers[1].pos_fin).length();
 }
 
 ofVec2f graph_t::graph_pos(idx_int r, double pos_in_river)
 {
     if (pos_in_river<0 || pos_in_river>1)
-        cout <<"out of bounds "<< pos_in_river  << endl;
+        cout <<"out of bounds in river "<< r << ", " <<pos_in_river  << endl;
 
     ofVec2f v(pos_in_river*rivers[r].pos_fin + (1-pos_in_river) * rivers[r].pos_ini);
     return v;
@@ -134,14 +140,15 @@ ofVec2f graph_t::graph_pos(idx_int r, double pos_in_river)
 ofVec2f  graph_t::graph_pos_particle(idx_int r, double pos_in_river, double lateral)
 {
     if (pos_in_river<0 || pos_in_river>1)
-        cout <<"out of bounds" << endl;
+        cout <<"out of bounds in river "<< r << ", " <<pos_in_river  <<endl;
     ofVec2f v(pos_in_river*rivers[r].pos_fin + (1-pos_in_river) * rivers[r].pos_ini);
     ofVec2f p(v);
 
     v=rivers[r].pos_fin - rivers[r].pos_ini;
     v.rotate(90);
     v.normalize();
-    p = p + v*lateral;
+    double w=sections[rivers[r].section].B(H(r, pos_in_river,false));
+    p = p + v*w*lateral/prop*5;//el *5 no tiene nada que hacer
 
     return p;
 
@@ -201,6 +208,12 @@ double graph_t::H(idx_int river, double pos_in_river, bool normalized)
      return ((1-frac)*rivers[river].h[node]+(frac)*rivers[river].h[node+1]-min_h)/(max_h-min_h);
   return (1-frac)*rivers[river].h[node]+(frac)*rivers[river].h[node+1];
 }
+
+double graph_t::U(idx_int river, double pos_in_river, bool normalized)
+ {
+  return Q(river, pos_in_river, normalized)/sections[rivers[river].section].S(H(river,pos_in_river,false));
+ }
+
 
 void graph_t::set_hq_constant(double h)
 {
@@ -263,13 +276,13 @@ void graph_t::compute_minmax_h()
 double river_section_t::S(double z)
 {
     if (z>h)
-        return (z-h/2)*b+h;
-    return b*z*z/2/h;
+        return (z-h/2)*b;
+    return b*z/2;
 }
 
 double river_section_t::B(double z)
 {
         if (z>h)
              return b;
-        return z*b;
+        return z/h*b;
 }

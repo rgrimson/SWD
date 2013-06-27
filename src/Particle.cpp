@@ -22,7 +22,7 @@ void particle_t::reset(){
 	radius = 0.02;
 	river = 0;
 	pos_in_river = 0;
-	lateral = ofRandom(-5,5)*0.05;
+	lateral = ofRandom(-1,1);
 	intensity=1;
 	rand = ofRandom(10);
 	active=false;
@@ -33,11 +33,22 @@ void particle_t::reset(){
 int particle_t::update(graph_t *graph, param_t *param){//returs 1 if went out of the system
 
 	//1 - APPLY THE FORCES BASED ON WHICH MODE WE ARE IN
-	pos_in_river+=param->dt*graph->Q(river,pos_in_river,true);
+	//double q=param->dt*graph->Q(river,pos_in_river,true);
+	//double h=param->dt*graph->H(river,pos_in_river,true);
+	//double s=graph->sections[river].S(h);
+	//double sh=graph->sections[river].h;
+	//double sb=graph->sections[river].b;
+	double u=graph->U(river,pos_in_river,true);
+	double dt=param->dt;
+	pos_in_river+=dt*u;
+
+	//cout <<"q:" << q <<" u:" << u << " h:" << h << " s:" << s <<" sh:" << sh <<" sb:" << sb << endl;
 
 	// If the particle_t reacher a union point
     if (pos_in_river>=1)
     {
+        double et=(pos_in_river-1)/u;//extra_time
+
         if ((graph->rivers[river].next_rivers).empty())  //no next river
          return 1;
         else if ((graph->rivers[river].next_rivers).size()==2)  //2 next river
@@ -45,59 +56,68 @@ int particle_t::update(graph_t *graph, param_t *param){//returs 1 if went out of
             //aca habria que calcular cuanto se mete exatamente en el nuevo rio
             //double d1;
             //  d1=(pos_in_river-1)*length(river)/U(step,river,1]
-            double u1,u2;
+            double q1,q2;
             bool r1=true,r2=true;
 
             if (graph->rivers[river].reverse_next_rivers[0])// compute the flow of the adjacent rivers
-                u1=-graph->Q(graph->rivers[river].next_rivers[0],1);
+                q1=-graph->Q(graph->rivers[river].next_rivers[0],1);
             else
-                u1=graph->Q(graph->rivers[river].next_rivers[0],0);
+                q1=graph->Q(graph->rivers[river].next_rivers[0],0);
 
             if (graph->rivers[river].reverse_next_rivers[1])
-                u2=-graph->Q(graph->rivers[river].next_rivers[1],1);
+                q2=-graph->Q(graph->rivers[river].next_rivers[1],1);
             else
-                u2=graph->Q(graph->rivers[river].next_rivers[1],0);
+                q2=graph->Q(graph->rivers[river].next_rivers[1],0);
 
-            if (u1<0)
+            if (q1<0)
                 r1=false;
-            if (u2<0)
+            if (q2<0)
                 r2=false;
 
             if (r1 && r2)
             {
-                if (ofRandom(-u1,u2)<0)
+                if (ofRandom(-q1,q2)<0)
                     r2=false;
                 else
                     r1=false;
             }
 
+            idx_int new_river=river;
+            bool reverse_river=false;
+
             if (r1 && !r2)  //takes the first river
             {
-              pos_in_river=pos_in_river - 1;  //this is not exact!
-
+              new_river=graph->rivers[river].next_rivers[0];
               if (graph->rivers[river].reverse_next_rivers[0])
-                pos_in_river=1 - pos_in_river;
-
-              river=graph->rivers[river].next_rivers[0];
+                reverse_river=true;
             }
 
             else if (r2 && !r1)  //takes the second river
             {
-              pos_in_river=pos_in_river - 1;  //this is not exact!
+              new_river=graph->rivers[river].next_rivers[1];
               if (graph->rivers[river].reverse_next_rivers[1])
-                pos_in_river=1 - pos_in_river;
-              river=graph->rivers[river].next_rivers[1];
+                reverse_river=true;
             }
             else if (!r1 && !r2)  //stays in the union
             {
               pos_in_river=1;  //this should not happen
+              et=0;
             }
+
+            river=new_river;
+            if (reverse_river)
+                pos_in_river=1 + et * graph->U(new_river,1,true);
+            else
+                pos_in_river = et * graph->U(new_river,0,true);
+
         }
     }
 
 // If the particle_t reacher a union point
     if (pos_in_river<0)
     {
+        double et=-pos_in_river/u;//extra_time
+
         if ((graph->rivers[river].prev_rivers).empty())  //no prev river
          return 1;
         else if ((graph->rivers[river].prev_rivers).size()==2)  //2 prev rivers
@@ -105,51 +125,61 @@ int particle_t::update(graph_t *graph, param_t *param){//returs 1 if went out of
             //aca habria que calcular cuanto se mete exatamente en el nuevo rio
             //double d1;
             //  d1=(pos_in_river-1)*length(river)/U(step,river,1]
-            double u1,u2;
+            double q1,q2;
             bool r1=true,r2=true;
 
             if (graph->rivers[river].reverse_prev_rivers[0])// compute the flow of the adjacent rivers
-                u1=graph->Q(graph->rivers[river].prev_rivers[0],0);
+                q1=graph->Q(graph->rivers[river].prev_rivers[0],0);
             else
-                u1=-graph->Q(graph->rivers[river].prev_rivers[0],1);
+                q1=-graph->Q(graph->rivers[river].prev_rivers[0],1);
 
             if (graph->rivers[river].reverse_prev_rivers[1])
-                u2=graph->Q(graph->rivers[river].prev_rivers[1],0);
+                q2=graph->Q(graph->rivers[river].prev_rivers[1],0);
             else
-                u2=-graph->Q(graph->rivers[river].prev_rivers[1],1);
+                q2=-graph->Q(graph->rivers[river].prev_rivers[1],1);
 
-            if (u1<0)
+            if (q1<0)
                 r1=false;
-            if (u2<0)
+            if (q2<0)
                 r2=false;
 
             if (r1 && r2)
             {
-                if (ofRandom(-u1,u2)<0)
+                if (ofRandom(-q1,q2)<0)
                     r2=false;
                 else
                     r1=false;
             }
 
+            idx_int new_river=river;
+            bool reverse_river=false;
+
             if (r1 && !r2)  //takes the first river
             {
-              pos_in_river=1 + pos_in_river;  //this is not exact!
               if (graph->rivers[river].reverse_prev_rivers[0])
-                pos_in_river=1 - pos_in_river;
-              river=graph->rivers[river].prev_rivers[0];
+                reverse_river=true;
+              new_river=graph->rivers[river].prev_rivers[0];
             }
 
             else if (r2 && !r1)  //takes the second river
             {
-              pos_in_river=pos_in_river + 1;  //this is not exact!
               if (graph->rivers[river].reverse_prev_rivers[1])
-                pos_in_river=1 - pos_in_river;
-              river=graph->rivers[river].prev_rivers[1];
+                reverse_river=true;
+              new_river=graph->rivers[river].prev_rivers[1];
             }
             else if (!r1 && !r2)  //stays in the union
             {
               pos_in_river=1;  //this should not happen
+              et=0;
             }
+
+            river=new_river;
+            if (reverse_river)
+                pos_in_river= - et * graph->U(new_river,0,true);
+            else
+                pos_in_river = 1 - et * graph->U(new_river,1,true);
+
+
         }
     }
 

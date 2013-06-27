@@ -77,7 +77,7 @@ class graph_t
       idx_int n_rivers, n_nodes, n_sections;
       idx_int n_single_nodes, n_triple_nodes;
       idx_int n_discret_pts, n_int_variables, n_variables;
-      double max_h, min_h;
+      double max_h, min_h, prop;
       vector <river_t> rivers;
       vector <node_t>  nodes;
       vector <river_section_t> sections;
@@ -101,8 +101,10 @@ class graph_t
 
         ofVec2f graph_pos(idx_int river, double pos_in_river);
 
-        double Q(idx_int river, double pos_in_river, bool normalized=true);
-        double H(idx_int river, double pos_in_river, bool normalized=true);
+        double Q(idx_int river, double pos_in_river, bool normalized=true);//flow
+        double H(idx_int river, double pos_in_river, bool normalized=true);//height
+        double U(idx_int river, double pos_in_river, bool normalized=true);//speed
+        double E(idx_int river, double pos_in_river, bool normalized=true);//elevation
 };
 //]
 

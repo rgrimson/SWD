@@ -16,10 +16,10 @@ void  param_t::set_internal_parameters()
     g=9.8;
 
     //particles parameters
-    max_particles=10000;
+    max_particles=100000;
 
     //when a border flows in, add points at this rate
-    inv_particles_density = 10;//m^3 of water/particle
+    inv_particles_density = 500;//m^3 of water/particle
 }
 
 //========================================================================

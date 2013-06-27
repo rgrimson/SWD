@@ -37,7 +37,7 @@ void testApp::setup(){
         if (param.verbose) cout << "Saving locations data" << endl;
         locations.save_step();
     }
- 	
+
 	if(param.draw)
     {
         visualization.setup(&graph,&param);
@@ -45,6 +45,8 @@ void testApp::setup(){
 
     zscale = 50;
     ztarget = 50;
+
+    //exitApp();
 
 }
 
@@ -94,7 +96,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-    ofBackgroundGradient(ofColor(60,60,60), ofColor(10,10,10));
+    ofBackgroundGradient(ofColor(10,55,10), ofColor(10,55,10));
 
 
     if(param.draw)
@@ -113,7 +115,7 @@ void testApp::keyPressed(int key){
         visualization.resetParticles();
     }
     if( key == '+' ){
-        visualization.addParticle();
+        //visualization.addParticle();
     }
     if( key == '-' ){
         idx_int i;

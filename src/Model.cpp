@@ -103,9 +103,14 @@ void testApp::draw(){
 
     if(param.draw)
     {
+        ofPushMatrix();
         ofTranslate(ofGetWindowWidth()/2.0,ofGetWindowHeight()/2.0);
         ofScale(zscale,zscale,0.0);
         visualization.draw();
+        ofPopMatrix();
+
+
+
     }
 
 

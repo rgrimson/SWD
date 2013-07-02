@@ -91,6 +91,8 @@ void testApp::update(){
     if (t==param.nt)
         exitApp();
 
+    zscale += (ztarget - zscale)*0.1;
+
 }
 
 //--------------------------------------------------------------
@@ -166,10 +168,10 @@ void testApp::mouseDragged(int x, int y, int button){
 void testApp::mousePressed(int x, int y, int button){
 
 if (button==3)
-    ztarget = zscale*1.3;
+    ztarget = ztarget*1.3;
 
 if (button==4)
-    ztarget = zscale/1.3;
+    ztarget = ztarget/1.3;
 
 }
 

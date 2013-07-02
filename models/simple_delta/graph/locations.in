@@ -1,12 +1,17 @@
-name               = Inicio_Parana
-river              = 0
-position_in_river  = 0.0
+name               = Parana
+river              = 3
+position_in_river  = 0.5
 
-name               = Fin_Lujan
-river              = 10
-position_in_river  = 1
+name               = Lujan
+river              = 8
+position_in_river  = 0.5
 
 name               = Nocturna
 river              = 16
 position_in_river  = 0.85
+
+name               = Arias
+river              = 12
+position_in_river  = 0.85
+
 

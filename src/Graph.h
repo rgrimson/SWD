@@ -105,6 +105,8 @@ class graph_t
         double H(idx_int river, double pos_in_river, bool normalized=true);//height
         double U(idx_int river, double pos_in_river, bool normalized=true);//speed
         double E(idx_int river, double pos_in_river, bool normalized=true);//elevation
+
+
 };
 //]
 

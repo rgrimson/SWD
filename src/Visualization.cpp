@@ -5,21 +5,27 @@
 //------------------------------------------------------------------
 visualization_t::visualization_t(){
 
-    mod1 = false;
+    mod1 = false; //rivers
     mod2 = false;
-    mod3 = true;
+    mod3 = true;  //particles
     mod4 = false;
-
+    mod5 = false;
+    mod6 = false;
+    mod7 = false;
+    mod8 = false;
+    mod9 = false;
+    mod0 = false;
 
     n_interp_pts=5;
     pdx = 1/(float)(n_interp_pts-1);
 
 }
 
-void visualization_t::setup(graph_t *graph_in, param_t *param_in){
+void visualization_t::setup(graph_t *graph_in, param_t *param_in, locations_t *locations_in){
 
     graph = graph_in;
     param = param_in;
+    locations=locations_in;
 
     /// River visual H
 
@@ -183,12 +189,58 @@ void visualization_t::draw(){
         for (idx_int r=0; r<graph->n_rivers;r++)
             river_shape[r].draw();
 
+    if(mod8)
+    {
+        ofVec2f pos;
+        ofSetColor(255, 0, 255, 127);
+
+        for (idx_int r=0; r<graph->n_rivers;r++)
+        {
+            pos=graph->graph_pos(r,0);
+            ofCircle(pos.x,pos.y,0.05);
+            ofSetColor(0, 255, 255, 127);
+            for (idx_int j=1; j<(graph->rivers[r].n_discret_pts)-1; j++)
+            {
+                pos=graph->graph_pos(r,((double) j)/(graph->rivers[r].n_discret_pts-1));
+                ofCircle(pos.x,pos.y,0.05);
+            }
+            ofSetColor(255, 0, 255, 127);
+            pos=graph->graph_pos(r,1);
+            ofCircle(pos.x,pos.y,0.05);
+
+        }
+        ofSetColor(255, 255, 0, 127);
+        for (idx_int i=0; i<graph->n_single_nodes;i++)
+        {
+            idx_int n=graph->border_nodes[i];
+            idx_int r;
+            double pos_in_river=0;
+
+            if (graph->nodes[n].river_out.empty())
+            {
+                r=graph->nodes[n].river_in[0];
+                pos_in_river=1;
+            }
+            else
+                r=graph->nodes[n].river_out[0];
+
+            pos=graph->graph_pos(r,pos_in_river);
+            ofCircle(pos.x,pos.y,0.05);
+        }
+
+    }
+
+    if(mod7)
+        locations->draw();
+
+
     if(mod3)
     {
         //ofScale(50.0,50.0,0.0);
         for(idx_int i = 0; i < active_particles.size(); i++)
             particle[active_particles[i]].draw();
     }
+
     /*
     if (param->draw_particles)
     {

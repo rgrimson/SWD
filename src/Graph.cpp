@@ -270,6 +270,7 @@ void graph_t::compute_minmax_h()
     //cout <<min_h << " " <<max_h << endl;
     //if (min_h<0) min_h=0;
 }
+
 /*******************
 *** River_sections ***
 ********************/
@@ -286,3 +287,5 @@ double river_section_t::B(double z)
              return b;
         return z/h*b;
 }
+
+

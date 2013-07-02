@@ -4,6 +4,7 @@
 #include "Parameters.h"
 #include "Particle.h"
 #include "River_shape.h"
+#include "Locations.h"
 
 class visualization_t{
 
@@ -12,7 +13,7 @@ class visualization_t{
 		visualization_t();
 
 		void reset();
-		void setup(graph_t *graph, param_t *param);
+		void setup(graph_t *graph, param_t *param, locations_t *locations);
 		void update();
 		void draw();
 
@@ -26,11 +27,18 @@ class visualization_t{
 		bool mod2;
 		bool mod3;
 		bool mod4;
+		bool mod5;
+		bool mod6;
+		bool mod7;
+		bool mod8;
+		bool mod9;
+		bool mod0;
 
 		float pdx;
 
 		graph_t *graph;
 		param_t *param;
+		locations_t *locations;
 
 		idx_int n_interp_pts;
 

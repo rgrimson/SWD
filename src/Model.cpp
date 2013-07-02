@@ -28,7 +28,7 @@ void testApp::setup(){
     solver.setup(&graph,&param);
 
     //load loactions
-    locations.load(&param,&solver);
+    locations.load(&param,&solver, &graph);
     locations.open_output_file();
 
     /** SAVE initial condition for locations**/
@@ -40,7 +40,7 @@ void testApp::setup(){
 
 	if(param.draw)
     {
-        visualization.setup(&graph,&param);
+        visualization.setup(&graph,&param, &locations);
     }
 
     zscale = 50;
@@ -129,6 +129,21 @@ void testApp::keyPressed(int key){
         visualization.mod2 = !visualization.mod2;
     if( key == '3' )
         visualization.mod3 = !visualization.mod3;
+    if( key == '4' )
+        visualization.mod4 = !visualization.mod4;
+    if( key == '5' )
+        visualization.mod5 = !visualization.mod5;
+    if( key == '6' )
+        visualization.mod6 = !visualization.mod6;
+    if( key == '7' )
+        visualization.mod7 = !visualization.mod7;
+    if( key == '8' )
+        visualization.mod8 = !visualization.mod8;
+    if( key == '9' )
+        visualization.mod9 = !visualization.mod9;
+    if( key == '0' )
+        visualization.mod0 = !visualization.mod0;
+
 
 }
 

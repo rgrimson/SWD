@@ -164,11 +164,6 @@ void visualization_t::update(){//returs 1 if went out of the system
     }
 
 
-
-
-
-
-
 /*
 	graph->Q(river,pos_in_river,true);
 
@@ -230,9 +225,14 @@ void visualization_t::draw(){
 
     }
 
-    if(mod7)
-        locations->draw();
-
+    if(mod7){
+        ofSetColor(0, 255, 0, 127);
+        for (idx_int i=0;i<locations->n_locations;i++)
+        {
+            ofCircle(locations->pos[i].x, locations->pos[i].y, 0.1);
+        }
+            //locations->draw();
+    }
 
     if(mod3)
     {
@@ -241,51 +241,7 @@ void visualization_t::draw(){
             particle[active_particles[i]].draw();
     }
 
-    /*
-    if (param->draw_particles)
-    {
-        if (param->verbose) cout << "Drawing particles" << endl;
 
-
-
-
-        ofSetColor(230);
-        ofDrawBitmapString("Spacebar to reset. \n+ to add new points. \n\nEsc to exit.", 10, 20);
-    }
-    if (param->draw_locations)
-    {
-        double *qh;
-        qh = new double[2];
-        for (idx_int l=0; l<param->n_locations; l++)
-        {
-            solver.qh(locations.river[l],locations.pos_in_river[l],qh);
-            ofCircle(l*100+100,50*qh[0]+300,5);
-            ofCircle(l*100+150,50*qh[1]+300,5);
-        }
-    }
-    if (param->draw_h_as_borders)
-        for (idx_int r=0; r<graph->n_rivers;r++)//plot rivers heights
-        {
-            ofVec2f v(graph->rivers[r].pos_fin - graph->rivers[r].pos_ini);
-            ofPolyline line;
-            ofVec2f w=v;
-            w.normalize();
-            w.rotate(90);//,ofVec3f(0, 0, 1));
-            w=w*5;
-
-            //line.addVertex(graph->rivers[r].pos_fin);
-            //line.addVertex(graph->rivers[r].pos_ini);
-            for (idx_int i=0; i<graph->rivers[r].n_discret_pts; i++)
-                line.addVertex(graph->rivers[r].pos_ini+v*i/(graph->rivers[r].n_discret_pts-1)-w*graph->rivers[r].h[i]);
-            //line.close(); // close the shape
-            line.draw();
-            line.clear();
-            for (idx_int i=0; i<graph->rivers[r].n_discret_pts; i++)
-                line.addVertex(graph->rivers[r].pos_ini+v*i/(graph->rivers[r].n_discret_pts-1)+w*graph->rivers[r].h[i]);
-            line.draw();
-        }
-
-*/
 }
 
 
@@ -306,17 +262,6 @@ void visualization_t::resetParticles(){
 }
 
 //--------------------------------------------------------------
-/*void visualization_t::addParticle(){
-    int i;
-    if (!inactive_particles.empty())
-    {
-        i=inactive_particles.back();
-        inactive_particles.pop_back();
-        particle[i].reset();
-        particle[i].active=true;
-    }
-}*/
-
 void visualization_t::addParticle(idx_int r, double pos, idx_int color){
     int i;
     if (!inactive_particles.empty())

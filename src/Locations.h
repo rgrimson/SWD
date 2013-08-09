@@ -13,6 +13,8 @@ using namespace std;
 /********************/
 class locations_t
 {
+
+public:
     /** VARIABLES **/
     string *name;
     FILE *out_file;
@@ -21,13 +23,11 @@ class locations_t
     solver_t *solver;
     ofVec2f *pos; //graphical pos
 
-public:
     idx_int *river;
     double *pos_in_river;
     ~locations_t();
     void load(param_t *param_in, solver_t *solver_in, graph_t *graph);
     void open_output_file();
     void save_step();
-    void draw();
 };
 //]
